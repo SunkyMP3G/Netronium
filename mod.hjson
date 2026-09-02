@@ -1,0 +1,17 @@
+name: "netro"
+repo: "sunkymp3g/Netro"
+minGameVersion: 159.7
+version: "0.1"
+main: "netro.NetroniumTFSMod"
+
+displayName: "[cyan[]]Netronium: The Final Showdown"
+author: "[orange[]]Sunky.MP3G"
+subtitle: "Revamped! (again)"
+description:
+  '''
+  TODO
+  '''
+
+dependencies: []
+hideBrowser: true
+java: true
