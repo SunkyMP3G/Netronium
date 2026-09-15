@@ -1,10 +1,9 @@
-package netro;
+package netro.ui;
 
 import arc.*;
 import arc.audio.*;
 import arc.math.*;
 import arc.util.*;
-import ent.anno.Annotations.*;
 import mindustry.audio.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -64,7 +63,7 @@ public class NetroSoundControl extends SoundControl{
                 //play music bus again, as it was stopped above
                 Core.audio.musicBus.play();
 
-                Core.audio.soundBus.play();
+                Core.audio.musicBus.play();
             }
         }
 

@@ -3,6 +3,7 @@ package netro.entities.comp;
 import arc.*;
 import arc.audio.*;
 import ent.anno.Annotations.*;
+import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -24,6 +25,16 @@ abstract class BossComp implements Unitc{
 
     @Override
     public void add(){
+        team.data().updateCount(type, 1);
+
+        //check if over unit cap
+        if(type.useUnitCap && count() > cap() && !spawnedByCore && !dead && !state.rules.editor){
+            Call.unitCapDeath(self());
+            team.data().updateCount(type, -1);
+        }
+
+        Vars.unitPhysics.add(self());
+
         // Do not show name if there's already a unit of that type, or outside of campaign.
         if(team == state.rules.waveTeam && state.isCampaign() && count() <= 1){
             String bossName = Core.bundle.get("@unit." + type.name + ".name");

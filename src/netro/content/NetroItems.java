@@ -7,7 +7,7 @@ public class NetroItems{
     public static Item
     //region Contents
     dionite, gatride, plating, tarant,
-    circuit, bitron, redAlloy, explosives,
+    circuit, bitron, magmaAlloy, crat,
     redPlating, vartyr, VA285,
     quanta, quantaCircuit, spectrePlating, neutroniumCrystal;
     //endregion Contents
@@ -35,11 +35,11 @@ public class NetroItems{
             hardness = 4;
             cost = 1.2f;
         }};
-        redAlloy = new Item("red-alloy"){{
+        magmaAlloy = new Item("magma-alloy"){{
             charge = 0.4f;
             cost = 1.8f;
         }};
-        explosives = new Item("explosives"){{
+        crat = new Item("crat"){{
             flammability = 0.4f;
             explosiveness = 1.2f;
             cost = 1f;

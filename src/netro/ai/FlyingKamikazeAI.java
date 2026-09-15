@@ -16,7 +16,7 @@ import static mindustry.world.meta.BlockFlag.*;
 /**
  * Used in flying kamikaze units that deal damage by falling.
  * Targets core or random stuff if "unpredictable AI" is enabled.
- * Uses its velocity and hit size to fall more precisely with any speed in reasonable range.
+ * Uses its velocity to fall more precisely with any speed in reasonable range.
  */
 public class FlyingKamikazeAI extends AIController{
     /// List of possible random targets.
@@ -52,11 +52,18 @@ public class FlyingKamikazeAI extends AIController{
         boolean shoot = false;
         //If target is null, game would crash
         if(target != null){
-            //Use current velocity, fallSpeed and hitSize to land on targets.
-            float dst = (unit.vel().len() / 1.5f) * (1f / unit.type.fallSpeed) + (unit.type.hitSize / 2f);
-            shoot = unit.within(target, dst);
+            shoot = unit.within(target, calculateFall());
         }
         unit.controlWeapons(shoot, shoot);
+    }
+
+    //Calculates unit fall distance considering its velocity. Falling units have 0.01 drag, and they normally fall in 55 ticks.
+    public float calculateFall(){
+        var res = 0f;
+        for(var i = 0; i < 55; i++){
+            res += unit.vel().len() * Mathf.pow(0.99f, i);
+        }
+        return res;
     }
 
     @Override

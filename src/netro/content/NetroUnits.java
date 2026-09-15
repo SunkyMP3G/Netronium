@@ -1,7 +1,7 @@
 package netro.content;
 
-import arc.math.*;
-import ent.anno.Annotations.*;
+import arc.graphics.*;
+import arc.math.geom.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
@@ -12,6 +12,9 @@ import mindustry.type.weapons.*;
 import netro.ai.*;
 import netro.gen.*;
 import netro.type.*;
+import netro.type.abilities.*;
+
+import static mindustry.Vars.*;
 
 public class NetroUnits{
     public static UnitType
@@ -20,7 +23,7 @@ public class NetroUnits{
     point, direct, target,
 
     ///Siege ground (tanks)
-    //beam, shell, flame, array, cascade,
+    beam, //shell, flame, array, cascade,
 
     ///Support ground
     //lighten, shine, gleam, luminate, radiate,
@@ -43,21 +46,27 @@ public class NetroUnits{
 
     public static void load(){
         //region Core
-        point = new NetroUnitType("point"){{
-            health = 200;
+        point = EntityRegistry.content("point", PayloadNetroUnit.class, name -> new NetroUnitType(name){{
+            health = 180;
             armor = 0f;
-            hitSize = 12f;
-            speed = 2.8f;
+            hitSize = 40f;
+            speed = 3.5f;
             accel = drag = 0.07f;
 
             mineTier = 1;
-            mineSpeed = 3f;
+            mineSpeed = 2.5f;
             buildSpeed = 1f;
             faceTarget = true;
             flying = true;
             isEnemy = false;
+            itemCapacity = 60;
+            payloadCapacity = (5.5f * 5.5f) * tilePayload;
 
-            controller = u -> new BuilderAI(true, 200);
+            abilities.add(new IdleShieldAbility(){{
+                addedHealth = 3f;
+            }});
+
+            controller = u -> new BuilderAI(true, 160);
 
             weapons.add(new RepairBeamWeapon(){{
                 widthSinMag = 0.11f;
@@ -66,9 +75,10 @@ public class NetroUnits{
                 y = 4f;
                 rotate = false;
                 shootY = 0f;
-                beamWidth = 0.5f;
-                repairSpeed = 1f;
-                fractionRepairSpeed = 0.05f;
+                beamWidth = 1f;
+                repairSpeed = 0.6f;
+                fractionRepairSpeed = 0.03f;
+                recentDamageMultiplier = 0.05f;
                 aimDst = 0f;
                 shootCone = 15f;
                 mirror = false;
@@ -81,11 +91,11 @@ public class NetroUnits{
                 healColor = Pal.accent;
 
                 bullet = new BulletType(){{
-                    maxRange = 60f;
+                    maxRange = 50f;
                 }};
             }});
 
-        }};
+        }});
         direct = new NetroUnitType("direct"){{
             health = 360;
             armor = 3f;
@@ -172,6 +182,53 @@ public class NetroUnits{
         }};
         //endregion Core
 
+        //region Siege ground
+        beam = EntityRegistry.content("beam", NetroUnit.class, name -> new NetroUnitType(name){{
+            health = 800;
+            hitSize = 16f;
+            speed = 1.1f;
+            rotateSpeed = 2f;
+
+            this.constructor = TankUnit::create;
+            flying = false;
+            itemCapacity = 0;
+            researchCostMultiplier = 0f;
+
+            treadPullOffset = 0;
+            treadRects = new Rect[] {
+            new Rect(13f, -28f, 11, 56)
+            };
+
+            weapons.add(new Weapon("netroniummod-beam-weapon"){{
+                reload = cooldownTime = 90f;
+                layerOffset = 0.0001f;
+                mirror = false;
+                top = true;
+                x = y = 0;
+                shootY = 10f;
+                recoil = 2f;
+                rotate = true;
+                rotateSpeed = 3.2f;
+                shootCone = 2f;
+                shootSound = Sounds.shootLancer;
+                heatColor = Color.valueOf("f9350f");
+                bullet = new LaserBulletType(32f){{
+                    sideAngle = 45f;
+                    sideWidth = 1f;
+                    sideLength = 10f;
+                    length = 35f;
+                    buildingDamageMultiplier = 1.3f;
+                    pierce = false;
+                    colors = new Color[]{Pal.neoplasm1.cpy().a(0.4f), Pal.neoplasm1, Color.white};
+                }};
+            }});
+
+            squareShape = true;
+            omniMovement = false;
+            rotateMoveFirst = true;
+        }});
+        //endregion Siege ground
+
         //region Utility air
         fly = new NetroUnitType("fly"){{
             health = 60;
@@ -179,7 +236,6 @@ public class NetroUnits{
             hitSize = 9f;
             speed = 2f;
             accel = drag = 0.09f;
-            unitCap = 3;
 
             //Unit seeking range
             range = 160f;
@@ -216,7 +272,7 @@ public class NetroUnits{
         //endregion Campaign
 
         //region Boss
-        bomber = EntityRegistry.content("bomber", BossUnit.class, name -> new NetroBossUnit("bomber"){{
+        bomber = EntityRegistry.content("bomber", BossNetroUnit.class, name -> new NetroBossUnit(name){{
             health = 10000;
             armor = 4f;
             hitSize = 16f;
@@ -226,7 +282,6 @@ public class NetroUnits{
             flying = true;
             targetAir = false;
             targetGround = true;
-            unitCap = 8;
 
             crashDamageMultiplier = 999f;
             wreckHealthMultiplier = 10f;

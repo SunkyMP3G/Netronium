@@ -4,7 +4,7 @@ minGameVersion: 159.7
 version: "0.1"
 main: "netro.NetroniumTFSMod"
 
-displayName: "[cyan[]]Netronium: The Final Showdown"
+displayName: "[cyan[]]Netronium: \nThe Final Showdown"
 author: "[orange[]]Sunky.MP3G"
 subtitle: "Revamped! (again)"
 description:
