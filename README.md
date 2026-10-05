@@ -1,4 +1,4 @@
-<img width="768" height="128" alt="logo" src="https://github.com/user-attachments/assets/7b23f0cb-8055-418d-8d06-10283bdb6b06" />
+<img width="768" height="128" alt="logo" src="https://github.com/user-attachments/assets/0808a63a-d4db-4c98-871e-2c0b79b3ca93" />
 
 # The Netronium, home of humanity, is attacked by Crux...
 This mod currently has no campaign and barely any content or sprites. I sometimes can have an idea and implement it here.
