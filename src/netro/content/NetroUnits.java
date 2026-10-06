@@ -17,18 +17,10 @@ import netro.type.units.*;
 
 public class NetroUnits{
     //region Contents
-
-    //other unit names (WIP)
-    //lighten, shine, gleam, luminate, radiate,
-    //alfa, bravo, charlie, delta, echo,
-    //prox, epsi, sol, sirius, arcturus,
-    //lusci, falco, casso, dromornis,
-    //shell, flame, array, cascade,
-
     /** Core */
-    public static @EntityDef(value = {Unitc.class, Netroc.class}, genIO = false) UnitType point, direct, target;
+    public static @EntityDef(value = {Unitc.class, Netroc.class, Payloadc.class}, genIO = false) UnitType point, direct, target;
     /** Siege ground (tanks) */
-    public static @EntityDef(value = {Unitc.class, Netroc.class, Tankc.class}, genIO = false) UnitType beam;
+    public static @EntityDef(value = {Unitc.class, Netroc.class, Tankc.class}, genIO = false) UnitType beam, shell, pierce;
     /** Utility air */
     public static @EntityDef(value = {Unitc.class, Netroc.class}, genIO = false) UnitType fly;
     /** Phomaxite air */
@@ -180,7 +172,8 @@ public class NetroUnits{
 
         //region Siege ground
         beam = new NetroUnitType("beam"){{
-            health = 800;
+            health = 460;
+            armor = 1f;
             hitSize = 12f;
             speed = 0.9f;
             rotateSpeed = 2f;
@@ -188,11 +181,9 @@ public class NetroUnits{
             flying = false;
             itemCapacity = 0;
             researchCostMultiplier = 0f;
-            floorMultiplier = 0.7f;
 
-            treadPullOffset = 0;
             treadRects = new Rect[]{
-                new Rect(-20f, -20f, 40, 40)
+                new Rect(-20f, -20f, 16, 40)
             };
 
             weapons.add(new Weapon("netro-beam-weapon"){{
@@ -213,11 +204,118 @@ public class NetroUnits{
                     pierce = false;
 
                     width = 12f;
-                    length = 35f;
+                    length = 48f;
                     sideAngle = 45f;
                     sideWidth = 0.9f;
                     sideLength = 10f;
                     colors = new Color[]{Pal.neoplasm1.cpy().a(0.4f), Pal.neoplasm1, Color.white};
+                }};
+            }});
+
+            squareShape = true;
+            omniMovement = false;
+            rotateMoveFirst = true;
+        }};
+        shell = new NetroUnitType("shell"){{
+            health = 1100;
+            armor = 4f;
+            hitSize = 18f;
+            speed = 0.75f;
+            rotateSpeed = 1.7f;
+
+            flying = false;
+            itemCapacity = 0;
+            researchCostMultiplier = 0f;
+            floorMultiplier = 0.9f;
+            crushFragile = true;
+
+            treadRects = new Rect[]{
+                new Rect(-29f, -40f, 14, 80)
+            };
+
+            weapons.add(new Weapon("netro-shell-weapon"){{
+                reload = 90f;
+                layerOffset = 0.0001f;
+                mirror = false;
+                top = true;
+                x = y = 0;
+                shootY = 7f;
+                recoil = 2.2f;
+                rotate = true;
+                rotateSpeed = 2.2f;
+                inaccuracy = 3f;
+                shootCone = 5f;
+                shootSound = Sounds.shootArtillery;
+                bullet = new BasicBulletType(4f, 60f){{
+                    splashDamage = 30f;
+                    splashDamageRadius = 24f;
+                    shootEffect = Fx.shootBig;
+                    despawnEffect = hitEffect = Fx.blastExplosion;
+                    hitSound = despawnSound = Sounds.explosionCrawler;
+                    lifetime = 20f;
+                    hitShake = 2f;
+                    despawnShake = 1f;
+                    width = height = 12f;
+                    hitSize = 5f;
+                    buildingDamageMultiplier = 1.3f;
+                }};
+            }});
+
+            squareShape = true;
+            omniMovement = false;
+            rotateMoveFirst = true;
+        }};
+        pierce = new NetroUnitType("pierce"){{
+            health = 3500;
+            armor = 7f;
+            hitSize = 24f;
+            speed = 0.65f;
+            rotateSpeed = 1.5f;
+
+            flying = false;
+            itemCapacity = 0;
+            researchCostMultiplier = 0f;
+            floorMultiplier = 0.75f;
+            crushFragile = true;
+
+            treadRects = new Rect[]{
+                new Rect(-34f, -52f, 17, 104)
+            };
+
+            weapons.add(new Weapon("netro-pierce-weapon"){{
+                reload = 110f;
+                layerOffset = 0.0001f;
+                mirror = false;
+                top = true;
+                x = y = 0;
+                shootY = 12f;
+                recoil = 2.2f;
+                rotate = true;
+                rotateSpeed = 2.2f;
+                shootCone = 5f;
+                shootSound = Sounds.shootTank;
+                inaccuracy = 3f;
+
+                shoot.shots = 2;
+                shoot.shotDelay = 20f;
+
+                bullet = new BasicBulletType(6f, 80f){{
+                    pierce = pierceBuilding = true;
+                    pierceCap = 3;
+                    armorMultiplier = 0.5f;
+
+                    shootEffect = Fx.shootBig2;
+                    hitEffect = Fx.hitBulletBig;
+                    despawnEffect = Fx.blastExplosion;
+                    trailWidth = 2f;
+                    trailLength = 8;
+
+                    lifetime = 40f;
+                    hitShake = 1f;
+                    width = 6f;
+                    height = 12f;
+                    hitSize = 3f;
+                    buildingDamageMultiplier = 1.3f;
                 }};
             }});
 
