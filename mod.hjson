@@ -13,5 +13,5 @@ description:
   '''
 
 dependencies: []
-hideBrowser: true
+hideBrowser: false
 java: true
