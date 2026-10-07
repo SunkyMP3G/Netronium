@@ -13,6 +13,8 @@ import netro.content.*;
 import netro.graphics.*;
 import netro.ui.*;
 
+import static mindustry.Vars.renderer;
+
 public class NetroUnitType extends UnitType{
     public NetroUnitType(String name){
         super(name);
@@ -28,46 +30,23 @@ public class NetroUnitType extends UnitType{
 
     /// Same as normal, but on quicksand it will recolor the unit less.
     @Override
-    public void drawMech(Mechc mech){
-        Unit unit = (Unit)mech;
-
-        Draw.reset();
-
-        float e = unit.elevation;
-
-        float sin = Mathf.lerp(Mathf.sin(mech.walkExtend(true), 2f / Mathf.PI, 1f), 0f, e);
-        float extension = Mathf.lerp(mech.walkExtend(false), 0, e);
-        float boostTrns = e * 2f;
-
-        Floor floor = unit.isFlying() ? Blocks.air.asFloor() : unit.floorOn();
-
-        if(floor.isLiquid){
-            Draw.color(Color.white, floor.mapColor, 0.3f);
+    public void applyColor(Unit unit){
+        Draw.color();
+        if(healFlash){
+            Tmp.c1.set(Color.white).lerp(healColor, Mathf.clamp(unit.healTime - unit.hitTime));
         }
+        Draw.mixcol(Tmp.c1, Math.max(unit.hitTime, !healFlash ? 0f : Mathf.clamp(unit.healTime)));
 
-        for(int i : Mathf.signs){
-            Draw.mixcol(Tmp.c1.set(mechLegColor).lerp(Color.white, Mathf.clamp(unit.hitTime)), Math.max(Math.max(0, i * extension / mechStride), unit.hitTime));
-
-            Draw.rect(legRegion,
-            unit.x + Angles.trnsx(mech.baseRotation(), extension * i - boostTrns, -boostTrns*i),
-            unit.y + Angles.trnsy(mech.baseRotation(), extension * i - boostTrns, -boostTrns*i),
-            legRegion.width * legRegion.scl() * i,
-            legRegion.height * legRegion.scl() * (1 - Math.max(-sin * i, 0) * 0.5f),
-            mech.baseRotation() - 90 + 35f*i*e);
+        if(unit.drownTime > 0 && unit.lastDrownFloor != null){
+            if(unit.lastDrownFloor == NetroBlocks.quicksand){
+                Draw.mixcol(Tmp.c1.set(unit.lastDrownFloor.mapColor).mul(0.83f), unit.drownTime * 0.5f);
+            }else{
+                Draw.mixcol(Tmp.c1.set(unit.lastDrownFloor.mapColor).mul(0.83f), unit.drownTime * 0.9f);
+            }
         }
-
-        Draw.mixcol(Color.white, unit.hitTime);
-
-        if(unit.lastDrownFloor != null && unit.lastDrownFloor == NetroBlocks.quicksand){
-            Draw.color(Color.white, Tmp.c1.set(unit.lastDrownFloor.mapColor).mul(0.83f), unit.drownTime * 0.6f);
-        }else if(unit.lastDrownFloor != null){
-            Draw.color(Color.white, Tmp.c1.set(unit.lastDrownFloor.mapColor).mul(0.83f), unit.drownTime * 0.9f);
-        }else{
-            Draw.color(Color.white);
+        //this is horribly scuffed.
+        if(renderer != null && renderer.overlays != null){
+            renderer.overlays.checkApplySelection(unit);
         }
-
-        Draw.rect(baseRegion, unit, mech.baseRotation() - 90);
-
-        Draw.mixcol();
     }
 }

@@ -7,14 +7,10 @@ pluginManagement{
     }
 
     plugins{
-        val entVersion = providers.gradleProperty("entVersion").get()
-        val clientVersion = providers.gradleProperty("clientVersion").get()
+        val entVersion = providers.gradleProperty("entVersion")
+        val clientVersion = providers.gradleProperty("clientVersion")
 
         id("com.github.GglLfr.EntityAnno") version(entVersion)
         id("com.github.GglLfr.MindustryClient") version(clientVersion)
     }
-}
-
-if(JavaVersion.current().ordinal < JavaVersion.VERSION_17.ordinal){
-    throw IllegalStateException("JDK 17 is a required minimum version. Yours: ${System.getProperty("java.version")}")
 }

@@ -47,9 +47,6 @@ public class IdleShieldAbility extends NetroAbility{
     @Override
     public void update(Unit unit){
         super.update(unit);
-        //No point in increasing received damage when idle when PlateArmor is here. Also prevents division by 0.
-        addedHealth = Math.max(addedHealth, 0f);
-
         if(isHardAbility && unit instanceof Netroc u){
             //Only active if the enemy unit is "lucky" (more units are "lucky" in erad) and difficulty is Hard+. "lucky" is set in NetroComp.
             if(hardActive(u)){
@@ -75,7 +72,7 @@ public class IdleShieldAbility extends NetroAbility{
     @Override
     public void addStats(Table t){
         super.addStats(t);
-        t.add(abilityStat("idledamagered", Strings.autoFixed(100f - (100f / (1f + addedHealth)), 1)));
+        t.add(abilityStat("idledamagered", addedHealth == -1 ? "???" : Strings.autoFixed(100f - (100f / (1f + addedHealth)), 1)));
     }
 
     /** Copies ArmorPlate draw, but activates with a different condition. */

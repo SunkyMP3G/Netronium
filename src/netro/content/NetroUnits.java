@@ -6,6 +6,8 @@ import ent.anno.Annotations.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.entities.bullet.*;
+import mindustry.entities.part.*;
+import mindustry.entities.pattern.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -47,12 +49,6 @@ public class NetroUnits{
             flying = true;
             isEnemy = false;
             itemCapacity = 60;
-
-            //For testing purposes.
-            abilities.add(new IdleShieldAbility(){{
-                addedHealth = 3f;
-                isHardAbility = true;
-            }});
 
             controller = u -> new BuilderAI(true, 160);
 
@@ -176,7 +172,7 @@ public class NetroUnits{
             armor = 1f;
             hitSize = 12f;
             speed = 0.9f;
-            rotateSpeed = 2f;
+            rotateSpeed = 2.1f;
 
             flying = false;
             itemCapacity = 0;
@@ -221,7 +217,7 @@ public class NetroUnits{
             armor = 4f;
             hitSize = 18f;
             speed = 0.75f;
-            rotateSpeed = 1.7f;
+            rotateSpeed = 1.9f;
 
             flying = false;
             itemCapacity = 0;
@@ -270,7 +266,7 @@ public class NetroUnits{
             armor = 7f;
             hitSize = 24f;
             speed = 0.65f;
-            rotateSpeed = 1.5f;
+            rotateSpeed = 1.7f;
 
             flying = false;
             itemCapacity = 0;
@@ -278,39 +274,62 @@ public class NetroUnits{
             floorMultiplier = 0.75f;
             crushFragile = true;
 
-            treadRects = new Rect[]{
-                new Rect(-34f, -52f, 17, 104)
+            treadRects = new Rect[] {
+                new Rect(-51f, -56f, 22, 112)
             };
+
+            abilities.add(new IdleShieldAbility(){{
+                addedHealth = 2f;
+                isHardAbility = true;
+            }});
 
             weapons.add(new Weapon("netro-pierce-weapon"){{
                 reload = 110f;
-                layerOffset = 0.0001f;
+                layerOffset = 0.001f;
                 mirror = false;
                 top = true;
                 x = y = 0;
                 shootY = 12f;
                 recoil = 2.2f;
                 rotate = true;
-                rotateSpeed = 2.2f;
+                rotateSpeed = 1.6f;
                 shootCone = 5f;
                 shootSound = Sounds.shootTank;
                 inaccuracy = 3f;
 
-                shoot.shots = 2;
-                shoot.shotDelay = 20f;
+                float barrelSpread = 6f;
+                shoot = new ShootAlternate(barrelSpread){{
+                    shots = 2;
+                    shotDelay = 20f;
+                }};
 
-                bullet = new BasicBulletType(6f, 80f){{
+                recoils = 2;
+                for(int i = 0; i < 2; i++){
+                    int f = i;
+                    parts.add(new RegionPart("-barrel"){{
+                        x = f == 1 ? barrelSpread/2 : -barrelSpread/2;
+                        recoilIndex = f;
+                        under = true;
+                        moves.add(new PartMove(PartProgress.recoil, 0f, -2f, 0f));
+                    }});
+                }
+
+                bullet = new BasicBulletType(6f, 60f){{
                     pierce = pierceBuilding = true;
                     pierceCap = 3;
-                    armorMultiplier = 0.5f;
+                    armorMultiplier = 0.75f;
 
-                    shootEffect = Fx.shootBig2;
+                    //Makes hitting small targets a bit easier
+                    homingRange = 16f;
+                    homingPower = 0.01f;
+
+                    shootEffect = Fx.shootBig;
                     hitEffect = Fx.hitBulletBig;
                     despawnEffect = Fx.blastExplosion;
-                    trailWidth = 2f;
-                    trailLength = 8;
+                    trailWidth = 1.5f;
+                    trailLength = 6;
 
-                    lifetime = 40f;
+                    lifetime = 28f;
                     hitShake = 1f;
                     width = 6f;
                     height = 12f;
