@@ -279,6 +279,7 @@ public class NetroUnits{
             };
 
             abilities.add(new IdleShieldAbility(){{
+                z = Layer.groundUnit + 1;
                 addedHealth = 2f;
                 isHardAbility = true;
             }});
